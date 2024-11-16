@@ -5,10 +5,12 @@ from django.http import JsonResponse
 from django.http import Http404
 
 from rest_framework import status, filters
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 
 from .models import Book, Author, Order, User
 from .serializers import UserSerializer, BookSerializer, OrderSerializer, AuthorSerializer
@@ -58,6 +60,7 @@ def FBV_List(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def FBV_PK(request, pk):
     try:
         user = User.objects.get(pk = pk)
@@ -99,11 +102,17 @@ class CBV_List(APIView):
             serializer.data,
             status= status.HTTP_400_BAD_REQUEST
         )
+        
+#sorted
+class CBV_BookList(APIView):
+    def get(self, request):
+        books = Book.objects.all().order_by('title')
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
 
 #4.2 GET PUT DELETE class based views -- pk 
 class  CBV_pk(APIView):
-
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)

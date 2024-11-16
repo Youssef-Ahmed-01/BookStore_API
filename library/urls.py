@@ -1,6 +1,8 @@
 from django.urls import path, include
 from library import views
 from rest_framework.routers import DefaultRouter
+from rest_framework.authtoken.views import obtain_auth_token
+
 
 router = DefaultRouter()
 router.register('users', views.viewsets_user)
@@ -14,6 +16,8 @@ urlpatterns = [
     path('fbv/', views.FBV_List),
     path('fbv/<int:pk>', views.FBV_PK),
     path('cbv/', views.CBV_List.as_view()),
+    path('cbvorder/', views.CBV_BookList.as_view()),
     path('cbv/<int:pk>', views.CBV_pk.as_view()),
     path('vs/', include(router.urls)),
-    path('api-auth', include('rest_framework.urls')),]
+    path('api-token-auth/', obtain_auth_token ),
+]

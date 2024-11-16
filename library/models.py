@@ -14,7 +14,7 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    author = models.ForeignKey(Author, related_name='author', on_delete=models.CASCADE)
+    author_n = models.ForeignKey(Author, related_name='book', on_delete=models.CASCADE)
     
     def __str__(self):
         return self.title
@@ -32,10 +32,11 @@ class User(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, related_name='order', on_delete=models.CASCADE)
     book = models.ForeignKey(Book, related_name='order', on_delete=models.CASCADE)
+    total_price = models.FloatField()
     s_time = models.TimeField("date published")
     
     def __str__(self):
-        return f'{self.user} + {self.book}'
+        return f'{self.user} +   {self.book}'
 
     
     
